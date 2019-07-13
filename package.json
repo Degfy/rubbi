@@ -1,12 +1,16 @@
 {
     "name": "rubbi",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "收集一些好用的工具函数",
     "main": "index.js",
     "scripts": {
         "test": "jest",
         "test-cov": "jest --coverage --runInBand --forceExit",
         "lint": "eslint index.js lib test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Degfy/rubbi.git"
     },
     "keywords": [
         "tool",
