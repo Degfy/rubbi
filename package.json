@@ -1,6 +1,6 @@
 {
   "name": "rubbi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "收集一些好用的工具函数",
   "main": "index.js",
   "scripts": {
