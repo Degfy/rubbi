@@ -3,7 +3,28 @@ const rubbi = require('../..');
 
 describe('tool.js', () => {
     it('readline', async () => {
-        // todo
+
+        const {
+            PassThrough
+        } = require('stream');
+        const q = 'input some word,please';
+        const a = 'ok, this is a test';
+
+        const input = new PassThrough;
+        const output = new PassThrough;
+
+        const pro = rubbi.readline(q, {
+            input,
+            output,
+        });
+
+        output.on('data', data => {
+            assert.equal(data.toString(), q);
+        });
+        input.write(a + '\n');
+
+        const read = await pro;
+        assert.equal(read, a);
     });
 
     it('writeFile', async () => {
