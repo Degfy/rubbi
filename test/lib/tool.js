@@ -49,7 +49,7 @@ describe('tool.js', () => {
         let sleepTime = 10;
         let begin = Date.now();
         await rubbi.sleep(sleepTime);
-        assert.equal(Math.abs((Date.now() - begin) - sleepTime) < 5, true);
+        assert.equal(Math.abs((Date.now() - begin) - sleepTime) < 8, true);
     });
 
     it('toCamel', () => {
@@ -105,5 +105,116 @@ describe('tool.js', () => {
         }];
 
         assert.equal(rubbi.pathProperty(arr, '0.a.0.b.0'), 1223);
+    });
+
+    it('asyncAll', async () => {
+        const list = [],
+            end = 1000;
+        for (let i = 0; i < end; i++) {
+            list.push(i);
+        }
+
+        const testArr = [];
+        await rubbi.asyncAll(list, async it => {
+            await rubbi.sleep(Math.random() * 10);
+            testArr.push(it);
+        });
+
+        assert.equal(end, testArr.length);
+        assert.equal(end, [...new Set(testArr)].length);
+        const index = testArr.find((it, i) => it != i);
+        assert.equal(index > -1, true);
+    });
+
+    it('asyncEach', async () => {
+        const list = [],
+            end = 100;
+        for (let i = 0; i < end; i++) {
+            list.push(i);
+        }
+
+        const testArr = [];
+        await rubbi.asyncEach(list, async it => {
+            await rubbi.sleep(Math.random() * 5);
+            testArr.push(it);
+        });
+
+        assert.equal(end, testArr.length);
+        assert.equal(end, [...new Set(testArr)].length);
+        const index = testArr.find((it, i) => it != i);
+        assert.equal(index, undefined);
+    });
+
+    it('multiExec', async () => {
+        const list = [],
+            end = 100;
+        for (let i = 0; i < end; i++) {
+            list.push(i);
+        }
+
+        const multi = 5;
+        let total = 0;
+        let running = 0;
+
+        const outArr = await rubbi.multiExec(list, async (item, i) => {
+            running++;
+            total++;
+            await rubbi.sleep(Math.random() * 100);
+            assert.equal(item, i);
+            return i;
+        }, {
+            multi,
+            process(item, curIndex, executedCount) {
+                assert.equal(true, running <= multi);
+                assert.equal(true, running >= 1);
+                assert.equal(true, executedCount <= total);
+                assert.equal(item, curIndex);
+                running--;
+            },
+            returning: true,
+        });
+        assert.equal(total, end);
+        outArr.forEach((element, i) => {
+            assert.equal(element, i);
+        });
+    });
+
+    it('multiExec throw Error', async () => {
+        const list = [],
+            end = 100;
+        for (let i = 0; i < end; i++) {
+            list.push(i);
+        }
+
+        const message = '11 throw';
+
+        const multi = 5;
+        let total = 0;
+        let running = 0;
+
+        try {
+            await rubbi.multiExec(list, async (item, i) => {
+                running++;
+                total++;
+                assert.equal(item, i);
+                await rubbi.sleep(Math.random() * 100);
+                if (i === 10) {
+                    throw Error(message);
+                }
+            }, {
+                multi,
+                process(item, curIndex, executedCount) {
+                    assert.equal(true, running <= multi);
+                    assert.equal(true, running >= 1);
+                    assert.equal(true, executedCount <= total);
+                    assert.equal(item, curIndex);
+                    running--;
+                },
+            });
+        } catch (e) {
+            assert.equal(message, e.message);
+            assert.equal(true, total <= end);
+            assert.equal(true, 10 <= total);
+        }
     });
 });
