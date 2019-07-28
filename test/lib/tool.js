@@ -217,4 +217,30 @@ describe('tool.js', () => {
             assert.equal(true, 10 <= total);
         }
     });
+
+    it('whiteBlock', () => {
+        const fromObj = {
+            a: 1,
+            b: 2,
+            c: 3
+        };
+
+        const out = rubbi.whiteBlock(fromObj, ['a', 'b']);
+        assert.equal(Object.keys(out).length, 2);
+        assert.equal(out.a, fromObj.a);
+        assert.equal(out.b, fromObj.b);
+    });
+
+    it('blackBlock', () => {
+        const fromObj = {
+            a: 1,
+            b: 2,
+            c: 3
+        };
+
+        const out = rubbi.blackBlock(fromObj, ['c']);
+        assert.equal(Object.keys(out).length, 2);
+        assert.equal(out.a, fromObj.a);
+        assert.equal(out.b, fromObj.b);
+    });
 });
