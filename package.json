@@ -1,12 +1,12 @@
 {
     "name": "rubbi",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "收集一些好用的工具函数",
     "main": "index.js",
     "scripts": {
         "test": "jest",
         "test-cov": "jest --coverage --runInBand --forceExit",
-        "lint": "eslint index.js lib test"
+        "lint": "jshint index.js lib test"
     },
     "repository": {
         "type": "git",
@@ -20,7 +20,7 @@
     "author": "degfy@sina.com",
     "license": "ISC",
     "devDependencies": {
-        "eslint": "^6.0.1",
+        "jshint": "^2.10.2",
         "babel-eslint": "^10.0.2",
         "jest": "^24.8.0",
         "supertest": "^4.0.2"
